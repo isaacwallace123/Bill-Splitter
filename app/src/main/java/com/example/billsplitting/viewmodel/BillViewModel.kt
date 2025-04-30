@@ -3,6 +3,7 @@ package com.example.billsplitting.ui.viewmodel
 import Bill
 import UserPayment
 import android.app.Application
+import android.util.Log
 import androidx.compose.runtime.*
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
@@ -15,6 +16,7 @@ class BillViewModel(application: Application) : AndroidViewModel(application) {
         private set
 
     init {
+        Log.d("BillViewModel", "Initialized successfully")
         loadBills()
     }
 

@@ -3,6 +3,7 @@ package com.example.billsplitting.ui.screen
 import android.Manifest
 import android.annotation.SuppressLint
 import android.location.Location
+import android.util.Log
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -29,6 +30,8 @@ fun MapScreen(navController: NavController) {
     val fusedLocationClient = remember { LocationServices.getFusedLocationProviderClient(context) }
 
     val locationPermissionState = rememberPermissionState(Manifest.permission.ACCESS_FINE_LOCATION)
+    val coarseLocationPermission = rememberPermissionState(Manifest.permission.ACCESS_COARSE_LOCATION)
+
     var userLocation by remember { mutableStateOf<LatLng?>(null) }
     var selectedLocation by remember { mutableStateOf<LatLng?>(null) }
     var cameraMoved by remember { mutableStateOf(false) }
@@ -36,14 +39,25 @@ fun MapScreen(navController: NavController) {
     val cameraPositionState = rememberCameraPositionState()
 
     LaunchedEffect(locationPermissionState.status) {
-        if (!locationPermissionState.status.isGranted) {
+        if (!locationPermissionState.status.isGranted && !coarseLocationPermission.status.isGranted) {
             locationPermissionState.launchPermissionRequest()
+            Log.d("MapScreen", "User does not have permission")
         } else {
-            val location: Location? = fusedLocationClient.lastLocation.awaitOrNull()
+            val location = suspendCancellableCoroutine<Location?> { cont ->
+                fusedLocationClient.getCurrentLocation(
+                    com.google.android.gms.location.Priority.PRIORITY_HIGH_ACCURACY,
+                    null
+                )
+                    .addOnSuccessListener { cont.resume(it) }
+                    .addOnFailureListener { cont.resume(null) }
+            }
+
             location?.let {
                 userLocation = LatLng(it.latitude, it.longitude)
                 selectedLocation = LatLng(it.latitude, it.longitude)
             }
+
+            Log.d("MapScreen", "Fetched current location: $location")
         }
     }
 
