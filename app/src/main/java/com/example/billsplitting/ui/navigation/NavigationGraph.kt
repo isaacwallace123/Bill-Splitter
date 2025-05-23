@@ -19,7 +19,10 @@ import com.example.billsplitting.ui.viewmodel.BillViewModel
 fun NavigationGraph(navController: NavHostController, modifier: Modifier, darkTheme: Boolean, onToggleTheme: (Boolean) -> Unit, billViewModel: BillViewModel) {
     NavHost(navController, startDestination = Screen.Home.route, modifier = modifier) {
         composable(Screen.Home.route) {
-            HomeScreen()
+            HomeScreen(
+                onMapClick = { navController.navigate(Screen.Map.route) },
+                onSettingsClick = { navController.navigate(Screen.Settings.route) }
+            )
         }
 
         composable(Screen.Map.route) {

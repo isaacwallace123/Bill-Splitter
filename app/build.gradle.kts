@@ -58,6 +58,7 @@ dependencies {
     implementation(libs.accompanist.permissions)
     implementation(libs.maps.compose)
     implementation(libs.material)
+    implementation(libs.androidx.work.runtime.ktx)
 
     implementation(libs.androidx.room.runtime)
     implementation(libs.androidx.room.ktx)

@@ -7,6 +7,7 @@ import android.util.Log
 import androidx.compose.runtime.*
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.billsplitting.functionality.scheduleBillReminder
 import kotlinx.coroutines.launch
 
 class BillViewModel(application: Application) : AndroidViewModel(application) {
@@ -36,6 +37,8 @@ class BillViewModel(application: Application) : AndroidViewModel(application) {
 
             dao.insertPayments(updatedPayments)
             loadBills()
+
+            scheduleBillReminder(getApplication())
         }
     }
 
